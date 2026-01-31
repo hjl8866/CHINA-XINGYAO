@@ -1,0 +1,149 @@
+<html lang="en">
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>登录</title> 
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 1s ease-in-out;
+        }
+
+        .login-container {
+            width: 300px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .login-container h2 {
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 30px;
+            background-color: #ffffff;
+            outline: none;
+            box-sizing: border-box;
+            font-size: 16px;
+            color: #000000;
+        }
+
+        .btn {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .input-group input:hover,
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .contact-btn {
+            background-color:#007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .contact-btn:hover {
+            background-color: #0056b3;
+        }
+    nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+      
+      </style> 
+  <script>
+  
+        function getRandomBackground() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const imageUrl = `https://source.unsplash.com/random/${width}x${height}/?nature`;
+            document.body.style.backgroundImage = `url(${imageUrl})`;
+        }
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            getRandomBackground();
+
+            setInterval(getRandomBackground, 60000); // 每隔60秒更新背景图片
+
+            const usernameField = document.getElementById('username');
+            const passwordField = document.getElementById('password');
+
+            usernameField.addEventListener('focus', (event) => {
+                usernameField.style.backgroundColor = '#ffffff';
+            });
+
+            usernameField.addEventListener('blur', (event) => {
+                usernameField.style.backgroundColor = '#ffffff';
+            });
+
+            passwordField.addEventListener('focus', (event) => {
+                passwordField.style.backgroundColor = '#ffffff';
+            });
+
+            passwordField.addEventListener('blur', (event) => {
+                passwordField.style.backgroundColor = '#ffffff';
+            });
+        });
+      
+    </script> 
+  <script src="js/jq.js"></script> 
+ </head> 
+ <body id="v1" style="background-image: url(&quot;https://source.unsplash.com/random/424x849/?nature&quot;);"> 
+  <div id="v2" class="login-container"> 
+   <h2 id="v3">用户登录</h2> 
+   <form id="v4" action="your_server_endpoint_here" method="POST"> 
+    <div id="v5" class="input-group"> 
+     <label id="v6" for="username">用户名:</label> 
+     <input type="text" id="username" name="username" required="" style="background-color: rgb(255, 255, 255);"> 
+    </div> 
+    <div id="v7" class="input-group"> 
+     <label id="v8" for="password">密码:</label> 
+     <input type="password" id="password" name="password" required=""> 
+    </div> 
+    <div id="v12"> 
+     <button id="v9" type="submit" class="btn"><header><nav><a href="zx.html">登录</a></nav></header>
+     <button id="v9" type="submit" class="btn"><header><nav><a href="5.html">注册</a></nav></header>
+     
+ </body>
+</html>

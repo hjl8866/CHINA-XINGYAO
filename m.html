@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>请输入支付密码</title>
+  </head>
+   <style>
+   *{
+     margin:0;
+     padding:0;
+     }
+   #a{
+     width:50vw;
+     position:relative;
+     height:30px;
+     text-align:center;
+     }
+     #b{
+       margin:auto;
+       background-color:gray;
+       width:50vw;
+       }
+     #c{
+       margin:auto;
+       background-color:gray;
+       width:50vw;
+       }
+     #d{
+       width:80vw;
+       margin:50px auto;
+       background-color:gray;
+       }
+     #e{
+       text-align:center;
+       }
+     button{
+       width:57px;
+       height:30px;
+       margin:0;
+       padding:0;
+       }
+   </style>
+  <body>
+  <div id="d">
+   <p id="e">请输入支付密码……</p>
+    <br>
+   <div id="c">
+	<input type="password" id="a" placeholder="请输入6位数支付密码" maxlength="6" disabled/>
+    </div>
+   <br>
+   <div id="b">
+    <button id="aa">1</button>
+     <button id="bb">2</button>
+      <button id="cc">3</button>
+       <button id="dd">4</button>
+        <button id="ee">5</button>
+       <button id="ff">6</button>
+      <button id="gg">7</button>
+     <button id="hh">8</button>
+    <button id="ii">9</button>
+   <button id="jj">清空</button>
+    <button id="kk">0</button>
+     <button id="qr">确认</button>
+      </div>
+       <button onclick="mima()" style="width:50vw;margin-left:54px;margin-top:5px;margin-bottom:5px;">显示/隐藏</button>
+        </div>
+        
+  </body>
+   <script>
+   document.getElementById("a");
+   document.getElementById("aa");
+   document.getElementById("bb");
+   document.getElementById("cc");
+   document.getElementById("dd");
+   document.getElementById("ee");
+   document.getElementById("ff");
+   document.getElementById("gg");
+   document.getElementById("hh");
+   document.getElementById("ii");
+   document.getElementById("jj");
+   document.getElementById("kk");
+   document.getElementById("qr");
+   document.getElementById("mima");
+   </script>
+   <script>
+       aa.onclick=function (){
+     a.value += 1
+   }
+      bb.onclick=function (){
+     a.value += 2
+   }
+      cc.onclick=function (){
+     a.value += 3
+   }
+      dd.onclick=function (){
+     a.value += 4
+   }
+      ee.onclick=function (){
+     a.value += 5
+   }
+      ff.onclick=function (){
+     a.value += 6
+   }
+      gg.onclick=function (){
+     a.value += 7
+   }
+      hh.onclick=function (){
+     a.value += 8
+   }
+      ii.onclick=function (){
+     a.value += 9
+   }
+      jj.onclick=function (){
+     a.value = ""
+   }
+      kk.onclick=function (){
+     a.value += 0
+   }
+      qr.onclick=function (){
+     if(a.value == 123456){
+    alert("支付成功！");
+     }else{
+    alert("密码错误");
+     }
+   }
+      function mima(){
+     if(a.type == "password"){
+    a.type = "text"
+     }else{
+    a.type = "password"
+     }
+      }
+      function qq(){
+     window.open("9.png");
+      }
+   </script>
+</html>

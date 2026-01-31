@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+  rel="stylesheet"
+  href="https://unpkg.com/@waline/client@v2/dist/waline.css"
+/>
+<!-- Meta 图标 (可选) -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@waline/client@v2/dist/waline-meta.css"
+/>
+    <title>App Download</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.app-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.app-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.app-details {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.comments {
+    text-align: left;
+}
+
+#commentForm {
+    margin-top: 20px;
+}
+
+#commentInput {
+    padding: 10px;
+    width: 60%;
+    margin-right: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius:7px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+img{
+
+  border-radius:9px;
+  margin-right:1.9%;
+  border:1px solid black;
+  }
+
+
+        .modal {
+            display: none; /* 初始状态下隐藏放大后的图片 */
+            position: fixed;
+            z-index: 1;
+            padding-top: 50px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.9);
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+        }
+      .cnmsb-main .cnmsb-footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(102, 102, 102, 0.589);
+    padding: 20px 0;
+}
+
+.cnmsb-footer {
+    font-size: 12px;
+}
+.cnmsb-footer a {
+    color: rgba(187, 161, 161, 0.59);
+    text-decoration:none;
+}
+</style>
+<body>
+    <div class="app-container">
+        <img src="app.png" alt="App Icon" class="app-icon">
+        <div class="app-details">
+            <h1>music player </h1>
+            <p><b>大小: 3.48MB</b></p>
+              <p><b>好评: ⭐⭐⭐⭐⭐</b></p>
+            <p><b>应用详细:</b><br><br>music player<p> 
+            <p><b>应用版本:</b><br><br>0.0.1<p>
+    
+
+  
+                <!-- Comments will be dynamically added here -->
+            </ul>
+         
+                
+                    <button onclick="redirectToAnotherPage()">下载</button>
+                     
+        </div>
+         	<div id="waline"></div>
+                <script type="module">
+                  import { init } from 'https://unpkg.com/@waline/client@v2/dist/waline.mjs';
+
+                  init({
+                    el: '#waline',
+                    serverURL: 'https://waline.fusheng12.cn/',
+                   });
+                </script>
+        
+    </div>
+  
+    <!-- 添加放大后的图片显示框 -->
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+    
+                    <p>XINGRAO © 2020 - 2025 <a href="" target="_blank"
+                                                  rel="noopener noreferrer">星耀提供计算服务</a>
+                    <p><a href="https://beian.miit.gov.cn" target="_blank"
+                          rel="noopener noreferrer">粤ICP备202306130号</a></p>
+                </div>
+            </div>
+    <script>
+    
+       function redirectToAnotherPage() {
+        // 使用 JavaScript 实现页面跳转
+        window.location.href = 'https://183-232-114-169.pd1.cjjd19.com:30443/download-cdn.cjjd19.com/123-8/0dbf5a48/1819093559-0/0dbf5a48f4bb46bfd477d56e70e8b008/c-m66?v=5&t=1739966548&s=1739966548db7dd203304acdaa7fd67931e5c76bba&r=VUETK8&bzc=2&bzs=313831393039333535393a33303336323736313a333635313130353a30&filename=music+player+v0.0.1.apk&x-mf-biz-cid=c7190d8f-6dee-4735-923b-c7e08a15178a-c4937c&auto_redirect=0&cache_type=1&xmfcid=b0aa229b-3987-4524-b807-3a8712de1306-1-9eed82220'; // 替换成实际需要跳转的页面链接
+    } 
+    </script>
+    
+    <script src="ttps://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // 点击图片放大
+        $('img').on('click', function(){
+            var modal = document.getElementById('myModal');
+            var modalImg = document.getElementById("img01");
+            modal.style.display = "block";
+            modalImg.src = this.src;
+        });
+
+        // 点击放大后的图片区域外部，关闭放大图片显示
+        $('.modal').on('click', function(){
+            var modal = document.getElementById('myModal');
+            modal.style.display = "none";
+        });
+    </script>
+</body>
+</html>
+

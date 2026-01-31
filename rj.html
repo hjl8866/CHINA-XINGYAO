@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>人机验证系统</title>
+<style>
+    .captcha-container {
+        margin: 20px auto;
+        text-align: center;
+    }
+    .captcha斜体 {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        transform: rotate(-10deg); /* 斜体效果 */
+        filter: blur(2px); /* 添加模糊效果 */
+    }
+    input[type="text"] {
+        padding: 5px;
+        font-size: 16px;
+    }
+    button {
+        padding: 5px 15px;
+        font-size: 16px;
+    }
+</style>
+</head>
+<body>
+
+<div class="captcha-container">
+    <div class="captcha斜体" id="captchaText">请输入验证码</div>
+    <input type="text" id="userInput" placeholder="输入验证码" />
+    <button onclick="verifyCaptcha()">提交</button>
+</div>
+
+<script>
+// 生成一个随机的验证码
+function generateCaptcha() {
+    var captcha = '';
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < 6; i++) {
+        captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById('captchaText').textContent = '验证码: ' + captcha;
+    return captcha;
+}
+
+// 存储生成的验证码
+var correctCaptcha = generateCaptcha();
+
+// 验证用户输入的验证码
+function verifyCaptcha() {
+    var userInput = document.getElementById('userInput').value;
+    if (userInput === correctCaptcha) {
+        alert('验证成功！');
+        window.location.href = 'mm.html'; // 替换为你想跳转的网站
+    } else {
+        alert('验证码错误，请重新输入！');
+        // 重新生成验证码
+        correctCaptcha = generateCaptcha();
+    }
+}
+</script>
+
+</body>
+</html>
