@@ -1,0 +1,7 @@
+name = "china-xingyao"
+compatibility_date = "2026-10-31"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "xingyao_shop"
+database_id = "91237873-806c-4e02-a757-eb24fdf0cbe5"
