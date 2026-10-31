@@ -1,246 +1,134 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>星耀商城</title>
-    <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-    }
-
-    header {
-        background-color: #333;
-        color: white;
-        text-align: center;
-        padding: 10px;
-    }
-
-    header nav a {
-        color: white;
-        text-decoration: none;
-        margin-right: 10px;
-    }
-
-    header nav a:hover {
-        color: #ccc;
-    }
-
-    header nav span {
-        color: white;
-        margin-right: 10px;
-    }
-
-    header nav button {
-        background: none;
-        border: 1px solid white;
-        color: white;
-        padding: 2px 8px;
-        cursor: pointer;
-        font-size: 12px;
-    }
-
-    main {
-        padding: 10px;
-    }
-
-    section h2 {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
-    }
-
-    section ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    section ul li {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 10px;
-    }
-
-    section ul li img {
-        width: 100px;
-        height: 100px;
-        margin-right: 10px;
-    }
-
-    section ul li h3 {
-        font-size: 1.2rem;
-        margin: 0 0 5px 0;
-    }
-
-    section ul li button {
-        background-color: #333;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        margin-right: 5px;
-    }
-
-    section ul li button:hover {
-        background-color: #555;
-    }
-
-    section ul li button.add-cart {
-        background-color: #e74c3c;
-    }
-
-    section ul li button.add-cart:hover {
-        background-color: #c0392b;
-    }
-
-    footer {
-        background-color: #333;
-        color: white;
-        text-align: center;
-        padding: 10px;
-    }
-
-    footer div {
-        margin-bottom: 5px;
-    }
-
-    footer div span {
-        margin-right: 10px;
-    }
-
-    .msg {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #333;
-        color: #fff;
-        padding: 10px 20px;
-        border-radius: 6px;
-        display: none;
-        z-index: 999;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星耀商城</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    header { background: #333; color: #fff; text-align: center; padding: 10px; }
+    header nav a { color: #fff; text-decoration: none; margin-right: 10px; }
+    header nav a:hover { color: #ccc; }
+    header nav span { color: #fff; margin-right: 10px; }
+    header nav button { background: none; border: 1px solid #fff; color: #fff; padding: 2px 8px; cursor: pointer; font-size: 12px; }
+    main { padding: 10px; }
+    section h2 { font-size: 1.5rem; margin-bottom: 10px; }
+    section ul { list-style: none; padding: 0; margin: 0; }
+    section ul li { display: flex; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+    section ul li img { width: 100px; height: 100px; margin-right: 10px; }
+    section ul li h3 { font-size: 1.2rem; margin: 0 0 5px 0; }
+    section ul li button { background: #333; color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-size: 1.1rem; margin-right: 5px; }
+    section ul li button:hover { background: #555; }
+    section ul li button.add-cart { background: #e74c3c; }
+    section ul li button.add-cart:hover { background: #c0392b; }
+    .msg { position: fixed; top: 20px; right: 20px; background: #333; color: #fff; padding: 10px 20px; border-radius: 6px; display: none; z-index: 999; }
+    footer { background: #333; color: #fff; text-align: center; padding: 10px; margin-top: 20px; }
+    footer div { margin-bottom: 5px; }
+    footer div span { margin-right: 10px; }
 </style>
-
 </head>
 <body>
-    <header>
-        <nav id="nav">
-            <!-- JS 动态渲染导航 -->
-        </nav>
-    </header>
-   <main>
-        <section>
-            <h2>热门商品</h2>
-            <ul>
-                <li>
-                    <img src="xt.jpg" alt="商品1">
-                    <div>
-                        <h3>XINGRAO Tpua XT</h3>
-                        <button class="add-cart" onclick="addCart('p001','XINGRAO Tpua XT',3999,'xt.jpg')">加入购物车</button>
-                        <button>立即购买</button>
-                    </div>
-                </li>
-                <li>
-                    <img src="xt.jpg" alt="商品2">
-                    <div>
-                        <h3>XINGRAO Tpua XT pro</h3>
-                        <button class="add-cart" onclick="addCart('p002','XINGRAO Tpua XT pro',4999,'xt.jpg')">加入购物车</button>
-                        <button>立即购买</button>
-                    </div>
-                </li>
-                 <li>
-                    <img src="17.jpg" alt="商品3">
-                    <div>
-                        <h3>XINGRAO WATCH 5 pro</h3>
-                        <button class="add-cart" onclick="addCart('p003','XINGRAO WATCH 5 pro',1499,'17.jpg')">加入购物车</button>
-                        <button>立即购买</button>
-                    </div>
-                </li>
-                 <li>
-                    <img src="17.jpg" alt="商品4">
-                    <div>
-                        <h3>XINGRAO WATCH 5</h3>
-                        <button class="add-cart" onclick="addCart('p004','XINGRAO WATCH 5',999,'17.jpg')">加入购物车</button>
-                        <button>立即购买</button>
-                    </div>
-                </li>
- 
-            </ul>
-        </section>
-    </main>
-    <footer>
-        <div>
-            <span>关于我们</span>
-            |
-            <span>联系我们</span>
-            |
-            <span>招聘信息</span>
-        </div>
-        <div>
-            <span>&copy; 星耀商城</span>
-        </div>
-    </footer>
+<header>
+    <nav id="nav"></nav>
+</header>
 
-    <div class="msg" id="msg"></div>
+<main>
+    <section>
+        <h2>热门商品</h2>
+        <ul>
+            <li>
+                <img src="xt.jpg" alt="XINGRAO Tpua XT">
+                <div>
+                    <h3>XINGRAO Tpua XT</h3>
+                    <button class="add-cart" onclick="addCart('p001','XINGRAO Tpua XT',3999,'xt.jpg')">加入购物车</button>
+                    <button onclick="buyNow()">立即购买</button>
+                </div>
+            </li>
+            <li>
+                <img src="xt.jpg" alt="XINGRAO Tpua XT pro">
+                <div>
+                    <h3>XINGRAO Tpua XT pro</h3>
+                    <button class="add-cart" onclick="addCart('p002','XINGRAO Tpua XT pro',4999,'xt.jpg')">加入购物车</button>
+                    <button onclick="buyNow()">立即购买</button>
+                </div>
+            </li>
+            <li>
+                <img src="17.jpg" alt="XINGRAO WATCH 5 pro">
+                <div>
+                    <h3>XINGRAO WATCH 5 pro</h3>
+                    <button class="add-cart" onclick="addCart('p003','XINGRAO WATCH 5 pro',1499,'17.jpg')">加入购物车</button>
+                    <button onclick="buyNow()">立即购买</button>
+                </div>
+            </li>
+            <li>
+                <img src="17.jpg" alt="XINGRAO WATCH 5">
+                <div>
+                    <h3>XINGRAO WATCH 5</h3>
+                    <button class="add-cart" onclick="addCart('p004','XINGRAO WATCH 5',999,'17.jpg')">加入购物车</button>
+                    <button onclick="buyNow()">立即购买</button>
+                </div>
+            </li>
+        </ul>
+    </section>
+</main>
+
+<footer>
+    <div>
+        <span>关于我们</span> | <span>联系我们</span> | <span>招聘信息</span>
+    </div>
+    <div><span>&copy; 星耀商城</span></div>
+</footer>
+
+<div class="msg" id="msg"></div>
 
 <script>
-// ===== 测试弹窗：看 localStorage 里有没有存 email 和 token =====
-alert('email=' + localStorage.getItem('email') + ' | token=' + localStorage.getItem('token'));
-
-// 导航栏：已登录显示邮箱+购物车+退出，未登录显示登录/注册
 const nav = document.getElementById('nav');
-const token = localStorage.getItem('token');
 const email = localStorage.getItem('email');
 
 if (email) {
-  nav.innerHTML = '<span>' + email + '</span> | <a href="cart.html">购物车</a> | <button onclick="logout()">退出</button>';
+    nav.innerHTML = '<span>' + email + '</span> | <a href="cart.html">购物车</a> | <button onclick="logout()">退出</button>';
 } else {
-  nav.innerHTML = '<a href="login.html">登录</a> | <a href="register.html">注册</a>';
+    nav.innerHTML = '<a href="login.html">登录</a> | <a href="register.html">注册</a>';
 }
 
-// 加入购物车
 function addCart(productId, title, price, image) {
-  if (!email) {
-    alert('请先登录');
-    window.location.href = '/login.html';
-    return;
-  }
-
-  fetch('/api/cart?email=' + encodeURIComponent(email), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ product_id: productId, title: title, price: price, image: image })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.ok) {
-      showMsg('已加入购物车');
-    } else {
-      showMsg(data.error || '添加失败');
+    const email = localStorage.getItem('email');
+    if (!email) {
+        window.location.href = '/login.html';
+        return;
     }
-  })
-  .catch(err => {
-    showMsg('网络错误');
-  });
+
+    fetch('/api/cart?email=' + encodeURIComponent(email), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_id: productId, title: title, price: price, image: image })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) showMsg('已加入购物车');
+        else showMsg('添加失败');
+    })
+    .catch(() => showMsg('网络错误'));
+}
+
+function buyNow() {
+    const email = localStorage.getItem('email');
+    if (!email) { window.location.href = '/login.html'; return; }
+    window.location.href = '/cart.html';
 }
 
 function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('email');
-  window.location.href = '/login.html';
+    localStorage.removeItem('token');
+    localStorage.removeItem('email');
+    window.location.href = '/login.html';
 }
 
 function showMsg(text) {
-  const el = document.getElementById('msg');
-  el.textContent = text;
-  el.style.display = 'block';
-  setTimeout(() => { el.style.display = 'none'; }, 2000);
+    const el = document.getElementById('msg');
+    el.textContent = text;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 1800);
 }
 </script>
-
 </body>
 </html>
