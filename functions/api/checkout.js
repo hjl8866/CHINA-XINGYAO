@@ -31,7 +31,6 @@ export async function onRequestPost({ request, env }) {
     )`
   ).run();
 
-  // 生成订单号
   const orderNo = 'XY' + Date.now();
 
   // 写入订单
@@ -39,14 +38,14 @@ export async function onRequestPost({ request, env }) {
     'INSERT INTO orders (email, items, total) VALUES (?, ?, ?)'
   ).bind(email, JSON.stringify(items), total).run();
 
-  // 清空购物车（表名是 cart，不是 carts）
+  // 清空购物车（表名 cart，不是 carts）
   await env.DB.prepare(
     'DELETE FROM cart WHERE email = ?'
   ).bind(email).run();
 
   // 发邮件通知
   try {
-    const itemList = items.map(i => `${i.title || i.product_name || '商品'} × ${i.quantity || i.qty || 1}`).join('<br>');
+    const itemList = items.map(i => `${i.title || '商品'} × ${i.quantity || 1}`).join('<br>');
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
