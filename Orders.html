@@ -1,382 +1,253 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>订单</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Microsoft YaHei", sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的订单 - 星耀商城</title>
+    <style>
     body {
-      background-color: #f5f5f5;
-      padding: 20px;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
     }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      overflow: hidden;
+
+    header {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 10px;
     }
-    .header {
-      background-color: #ff4d4f;
-      color: #fff;
-      padding: 16px 20px;
-      font-size: 18px;
-      font-weight: bold;
+
+    header nav a {
+        color: white;
+        text-decoration: none;
+        margin-right: 10px;
     }
-    .order-info {
-      padding: 20px;
-      border-bottom: 1px solid #eee;
+
+    header nav a:hover {
+        color: #ccc;
     }
-    .order-info h3 {
-      margin-bottom: 12px;
-      color: #333;
+
+    header nav span {
+        color: white;
+        margin-right: 10px;
     }
-    .info-row {
-      display: flex;
-      margin: 8px 0;
-      color: #666;
+
+    header nav button {
+        background: none;
+        border: 1px solid white;
+        color: white;
+        padding: 2px 8px;
+        cursor: pointer;
+        font-size: 12px;
     }
-    .info-label {
-      width: 100px;
-      font-weight: 500;
+
+    main {
+        padding: 10px;
     }
-    .info-value {
-      flex: 1;
+
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
     }
-    /* 物流进度 */
-    .logistics {
-      padding: 20px;
-      border-bottom: 1px solid #eee;
+
+    .order-list {
+        list-style: none;
+        padding: 0;
     }
-    .logistics h3 {
-      margin-bottom: 20px;
-      color: #333;
+
+    .order-item {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 12px;
     }
-    .timeline {
-      position: relative;
-      padding-left: 30px;
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #eee;
     }
-    .timeline::before {
-      content: "";
-      position: absolute;
-      left: 10px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background-color: #e0e0e0;
+
+    .order-no {
+        font-size: 13px;
+        color: #666;
     }
-    .timeline-item {
-      position: relative;
-      padding-bottom: 20px;
-      color: #666;
+
+    .order-status {
+        font-size: 12px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: #d4edda;
+        color: #155724;
     }
-    .timeline-item::before {
-      content: "";
-      position: absolute;
-      left: -22px;
-      top: 0;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: #e0e0e0;
+
+    .order-status.pending {
+        background: #fff3cd;
+        color: #856404;
     }
-    .timeline-item.active::before {
-      background-color: #ff4d4f;
+
+    .order-items {
+        margin-bottom: 8px;
     }
-    .timeline-item.active .time,
-    .timeline-item.active .text {
-      color: #ff4d4f;
-      font-weight: 500;
+
+    .order-product {
+        display: flex;
+        align-items: center;
+        margin-bottom: 6px;
     }
-    .timeline-item .time {
-      font-size: 12px;
-      margin-bottom: 4px;
+
+    .order-product img {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
     }
-    /* 操作区 */
-    .order-actions {
-      padding: 20px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+
+    .order-product .pname {
+        font-size: 14px;
+        flex: 1;
     }
-    .btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
+
+    .order-product .pprice {
+        font-size: 13px;
+        color: #e74c3c;
+        font-weight: bold;
     }
-    .btn-primary {
-      background-color: #ff4d4f;
-      color: #fff;
+
+    .order-footer {
+        text-align: right;
+        font-size: 14px;
+        font-weight: bold;
+        padding-top: 8px;
+        border-top: 1px solid #eee;
     }
-    .btn-default {
-      background-color: #fff;
-      color: #666;
-      border: 1px solid #ddd;
+
+    .order-time {
+        font-size: 12px;
+        color: #999;
+        margin-top: 4px;
     }
-    /* 弹窗通用 */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
+
+    .empty {
+        text-align: center;
+        color: #999;
+        padding: 40px 0;
     }
-    .modal-content {
-      background-color: #fff;
-      width: 90%;
-      max-width: 500px;
-      border-radius: 8px;
-      padding: 24px;
-      position: relative;
+
+    .empty a {
+        color: #333;
+        text-decoration: underline;
     }
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      font-size: 20px;
-      cursor: pointer;
-      color: #999;
+
+    footer {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        margin-top: 20px;
     }
-    .modal-title {
-      font-size: 18px;
-      margin-bottom: 20px;
-      color: #333;
+
+    footer div {
+        margin-bottom: 5px;
     }
-    .form-group {
-      margin-bottom: 16px;
+
+    footer div span {
+        margin-right: 10px;
     }
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      color: #666;
-    }
-    .form-control {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-    textarea.form-control {
-      resize: vertical;
-      min-height: 100px;
-    }
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 20px;
-    }
-    /* 评价星星 */
-    .star-rating {
-      display: flex;
-      gap: 8px;
-      font-size: 24px;
-      color: #ccc;
-      cursor: pointer;
-    }
-    .star.active {
-      color: #ffc107;
-    }
-    /* 页面切换内容区 */
-    .page-content {
-      display: none;
-      padding: 20px;
-    }
-    .page-content.active {
-      display: block;
-    }
-    .back-btn {
-      margin-bottom: 20px;
-    }
-  </style>
+</style>
 </head>
 <body>
-  <div class="container">
-    <!-- 头部 -->
-    <div class="header">我的订单详情</div>
+    <header>
+        <nav id="nav"></nav>
+    </header>
 
-    <!-- 订单信息 -->
-    <div class="order-info page-content active" id="orderMain">
-      <h3>订单信息</h3>
-      <div class="info-row">
-        <div class="info-label">订单编号：</div>
-        <div class="info-value">20260201123456789</div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">下单时间：</div>
-        <div class="info-value">2026-02-01 10:30:25</div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">商品名称：</div>
-        <div class="info-value">星耀手环 2 Pro</div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">支付金额：</div>
-        <div class="info-value">¥ 128.00</div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">收货地址：</div>
-        <div class="info-value">北京市海淀区大宋街道中山小区 1号楼 3单元 501</div>
-      </div>
-    </div>
+    <main>
+        <h2>我的订单</h2>
+        <ul class="order-list" id="orderList"></ul>
+    </main>
 
-    <!-- 物流进程 -->
-    <div class="logistics page-content active" id="logisticsMain">
-      <h3>物流进程</h3>
-      <div class="timeline">
-        <div class="timeline-item active">
-          <div class="time">2026-02-01 11:00:00</div>
-          <div class="text">订单已支付，商家正在备货</div>
+    <footer>
+        <div>
+            <span>关于我们</span>
+            |
+            <span>联系我们</span>
+            |
+            <span>招聘信息</span>
         </div>
-        <div class="timeline-item active">
-          <div class="time">2026-02-01 14:20:15</div>
-          <div class="text">商品已出库，等待快递揽收</div>
+        <div>
+            <span>&copy; 星耀商城</span>
         </div>
-        <div class="timeline-item active">
-          <div class="time">2026-02-01 16:05:30</div>
-          <div class="text">快递已揽收，运输中</div>
-        </div>
-        <div class="timeline-item">
-          <div class="time">--</div>
-          <div class="text">到达目的地网点，派送中</div>
-        </div>
-        <div class="timeline-item">
-          <div class="time">--</div>
-          <div class="text">已签收，订单完成</div>
-        </div>
-      </div>
-    </div>
+    </footer>
 
-    <!-- 退货页面 -->
-    <div class="page-content" id="returnPage">
-      <button class="btn btn-default back-btn" onclick="goBack()">返回订单主页</button>
-      <h3>申请退货</h3>
-      <div class="form-group">
-        <label>退货原因</label>
-        <select class="form-control">
-          <option>不想要了</option>
-          <option>商品质量问题</option>
-          <option>发错货/漏发</option>
-          <option>其他</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>退货说明（选填）</label>
-        <textarea class="form-control" placeholder="请详细描述退货原因"></textarea>
-      </div>
-      <div class="form-group">
-        <label>联系方式</label>
-        <input type="text" class="form-control" placeholder="请输入手机号" value="13800138000">
-      </div>
-      <button class="btn btn-primary" onclick="submitReturn()">提交退货申请</button>
-    </div>
+<script>
+// 导航
+const nav = document.getElementById('nav');
+const token = localStorage.getItem('token');
+const email = localStorage.getItem('email');
 
-    <!-- 确认收货页面 -->
-    <div class="page-content" id="confirmPage">
-      <button class="btn btn-default back-btn" onclick="goBack()">返回订单主页</button>
-      <h3>确认收货</h3>
-      <p style="margin: 20px 0; color: #666;">确认收货后，订单将标记为完成，您可对商品进行评价。</p>
-      <button class="btn btn-primary" onclick="confirmReceive()">确认收货</button>
-    </div>
+if (token && email) {
+  nav.innerHTML = '<span>' + email + '</span> | <a href="x1.html">继续购物</a> | <a href="cart.html">购物车</a> | <button onclick="logout()">退出</button>';
+} else {
+  nav.innerHTML = '<a href="login.html">登录</a> | <a href="register.html">注册</a>';
+  window.location.href = '/login.html';
+}
 
-    <!-- 评价页面 -->
-    <div class="page-content" id="evaluatePage">
-      <button class="btn btn-default back-btn" onclick="goBack()">返回订单主页</button>
-      <h3>商品评价</h3>
-      <div class="form-group">
-        <label>商品评分</label>
-        <div class="star-rating" id="starRating">
-          <span class="star" onclick="setStar(1)">★</span>
-          <span class="star" onclick="setStar(2)">★</span>
-          <span class="star" onclick="setStar(3)">★</span>
-          <span class="star" onclick="setStar(4)">★</span>
-          <span class="star" onclick="setStar(5)">★</span>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>评价内容</label>
-        <textarea class="form-control" placeholder="请写下您的使用感受"></textarea>
-      </div>
-      <button class="btn btn-primary" onclick="submitEvaluate()">提交评价</button>
-    </div>
+// 加载订单
+loadOrders();
 
-    <!-- 操作按钮区 -->
-    <div class="order-actions page-content active" id="actionMain">
-      <button class="btn btn-default" onclick="showReturn()">申请退货</button>
-      <button class="btn btn-primary" onclick="showConfirm()">确认收货</button>
-      <button class="btn btn-default" onclick="showEvaluate()">去评价</button>
-    </div>
-  </div>
+async function loadOrders() {
+  if (!token || !email) return;
 
-  <script>
-    // 页面切换
-    function hideAllPages() {
-      document.querySelectorAll('.page-content').forEach(el => {
-        el.classList.remove('active');
-      });
-    }
-    function goBack() {
-      hideAllPages();
-      document.getElementById('orderMain').classList.add('active');
-      document.getElementById('logisticsMain').classList.add('active');
-      document.getElementById('actionMain').classList.add('active');
-    }
-    function showReturn() {
-      hideAllPages();
-      document.getElementById('returnPage').classList.add('active');
-    }
-    function showConfirm() {
-      hideAllPages();
-      document.getElementById('confirmPage').classList.add('active');
-    }
-    function showEvaluate() {
-      hideAllPages();
-      document.getElementById('evaluatePage').classList.add('active');
+  try {
+    const res = await fetch('/api/orders?email=' + encodeURIComponent(email));
+    const orders = await res.json();
+
+    const list = document.getElementById('orderList');
+
+    if (!orders || orders.length === 0) {
+      list.innerHTML = '<div class="empty">暂无订单，<a href="x1.html">去逛逛</a></div>';
+      return;
     }
 
-    // 评分星星
-    function setStar(num) {
-      const stars = document.querySelectorAll('.star');
-      stars.forEach((star, index) => {
-        star.classList.toggle('active', index < num);
-      });
-    }
+    list.innerHTML = orders.map(order => {
+      let items = [];
+      try { items = JSON.parse(order.items || '[]'); } catch(e) {}
 
-    // 提交退货
-    function submitReturn() {
-      alert('退货申请已提交，商家将在1-3个工作日内处理，请留意通知');
-      goBack();
-    }
-    // 确认收货
-    function confirmReceive() {
-      alert('确认收货成功，订单已完成，欢迎评价');
-      goBack();
-    }
-    // 提交评价
-    function submitEvaluate() {
-      const starActive = document.querySelectorAll('.star.active').length;
-      if (starActive === 0) {
-        alert('请先选择商品评分');
-        return;
-      }
-      alert('评价提交成功，感谢您的反馈');
-      goBack();
-    }
-  </script>
+      const statusClass = order.status === 'pending' ? 'pending' : '';
+      const statusText = order.status === 'paid' ? '已支付' : (order.status === 'pending' ? '处理中' : order.status);
+
+      return '<li class="order-item">' +
+        '<div class="order-header">' +
+          '<span class="order-no">订单号：' + order.order_no + '</span>' +
+          '<span class="order-status ' + statusClass + '">' + statusText + '</span>' +
+        '</div>' +
+        '<div class="order-items">' +
+          items.map(item => '<div class="order-product">' +
+            '<img src="' + (item.image || 'xt.jpg') + '" alt="">' +
+            '<span class="pname">' + item.title + ' × ' + item.quantity + '</span>' +
+            '<span class="pprice">¥' + (item.price * item.quantity) + '</span>' +
+          '</div>').join('') +
+        '</div>' +
+        '<div class="order-footer">' +
+          '合计：¥' + order.total +
+          '<div class="order-time">' + (order.created_at || '') + '</div>' +
+        '</div>' +
+      '</li>';
+    }).join('');
+  } catch (e) {
+    document.getElementById('orderList').innerHTML = '<div class="empty">加载失败，请刷新重试</div>';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('email');
+  window.location.href = '/login.html';
+}
+</script>
 </body>
 </html>
