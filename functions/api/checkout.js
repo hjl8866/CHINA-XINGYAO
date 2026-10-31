@@ -24,7 +24,7 @@ export async function onRequestPost({ request, env }) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: env.FROM_EMAIL,
+        from: onboarding@resend.dev,
         to: user.email,
         subject: '订单结算成功 - 星耀商城',
         html: `<h2>✅ 订单结算成功！</h2><p>感谢你的购买，以下是订单详情：</p><p><strong>商品：</strong><br>${itemList}</p><p><strong>合计：¥${total}</strong></p><p>我们会尽快为你发货 📦</p>`
