@@ -1,104 +1,309 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我的购物车 - 星耀商城</title>
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Arial, sans-serif;
-  min-height:100vh; color:rgba(255,255,255,0.9);
-  background: radial-gradient(circle at 12% 15%, rgba(76,175,80,0.35), transparent 45%), radial-gradient(circle at 88% 12%, rgba(0,200,255,0.25), transparent 50%), radial-gradient(circle at 50% 85%, rgba(120,80,255,0.22), transparent 55%), linear-gradient(135deg, #0b0d17, #11142a, #0a0c1a);
-  background-attachment: fixed; padding:20px;
-}
-.glass {
-  background:rgba(255,255,255,0.08); backdrop-filter:saturate(180%) blur(24px);
-  border:1px solid rgba(255,255,255,0.18); border-radius:20px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
-}
-.container{max-width:900px;margin:0 auto;}
-h1{color:#fff;font-size:24px;margin-bottom:24px;text-align:center;font-weight:600;}
-.empty{text-align:center;padding:60px 20px;color:rgba(255,255,255,0.5);}
-.empty .icon{font-size:60px;margin-bottom:16px;}
-.empty a{display:inline-block;color:#4CAF50;text-decoration:none;border:1px solid rgba(76,175,80,0.4);padding:10px 24px;border-radius:999px;margin-top:16px;}
-.cart-list{padding:20px;}
-.cart-item{display:flex;align-items:center;gap:16px;padding:16px;margin-bottom:12px;border-radius:14px;}
-.cart-item:hover{transform:translateX(4px);}
-.cart-item img{width:80px;height:80px;border-radius:12px;object-fit:cover;}
-.item-info{flex:1;}
-.item-info h3{font-size:15px;margin-bottom:6px;}
-.item-info .price{color:#4CAF50;font-weight:600;}
-.qty{display:flex;align-items:center;gap:10px;}
-.qty button{width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);cursor:pointer;background:rgba(255,255,255,0.1);color:#fff;font-size:16px;}
-.delete{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:18px;}
-.delete:hover{color:#ff3b30;}
-.summary{padding:20px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.1);}
-.total{font-size:18px;font-weight:500;}
-.total span{color:#4CAF50;font-weight:700;font-size:22px;}
-.checkout{background:rgba(76,175,80,0.3);color:#fff;border:1px solid rgba(76,175,80,0.5);padding:12px 32px;border-radius:999px;cursor:pointer;font-size:15px;font-weight:600;}
-.checkout:hover{background:rgba(76,175,80,0.55);}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:14px 24px;border-radius:12px;background:rgba(0,0,0,0.85);color:#fff;z-index:2000;display:none;}
-.toast.show{display:block;}
-@media(max-width:600px){.cart-item{flex-wrap:wrap;}.summary{flex-direction:column;gap:12px;}}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购物车 - 星耀商城</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 10px;
+    }
+
+    header nav a {
+        color: white;
+        text-decoration: none;
+        margin-right: 10px;
+    }
+
+    header nav a:hover {
+        color: #ccc;
+    }
+
+    header nav span {
+        color: white;
+        margin-right: 10px;
+    }
+
+    header nav button {
+        background: none;
+        border: 1px solid white;
+        color: white;
+        padding: 2px 8px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    main {
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .cart-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .cart-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    .cart-list li img {
+        width: 80px;
+        height: 80px;
+        margin-right: 10px;
+    }
+
+    .cart-list li h3 {
+        font-size: 1.1rem;
+        margin: 0 0 5px 0;
+    }
+
+    .cart-list li .price {
+        color: #e74c3c;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .cart-list li .qty {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .cart-list li .qty button {
+        background-color: #333;
+        color: white;
+        border: none;
+        padding: 3px 10px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .cart-list li .qty button:hover {
+        background-color: #555;
+    }
+
+    .cart-list li .qty span {
+        min-width: 20px;
+        text-align: center;
+    }
+
+    .cart-list li .del {
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        padding: 4px 10px;
+        cursor: pointer;
+        font-size: 12px;
+        margin-left: auto;
+    }
+
+    .cart-list li .del:hover {
+        background-color: #c0392b;
+    }
+
+    .total {
+        text-align: right;
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin: 20px 0 10px 0;
+    }
+
+    .checkout-btn {
+        display: block;
+        width: 100%;
+        background-color: #333;
+        color: white;
+        border: none;
+        padding: 12px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+    }
+
+    .checkout-btn:hover {
+        background-color: #555;
+    }
+
+    .empty {
+        text-align: center;
+        color: #999;
+        padding: 40px 0;
+    }
+
+    footer {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 10px;
+    }
+
+    footer div {
+        margin-bottom: 5px;
+    }
+
+    footer div span {
+        margin-right: 10px;
+    }
 </style>
 </head>
 <body>
-<div class="container">
-<h1>🛒 我的购物车</h1>
-<div id="cartContent"></div>
-</div>
-<div class="toast" id="toast"></div>
+    <header>
+        <nav id="nav"></nav>
+    </header>
+
+    <main>
+        <h2>我的购物车</h2>
+        <ul class="cart-list" id="cartList"></ul>
+        <div class="total" id="total"></div>
+        <button class="checkout-btn" onclick="checkout()">去结算</button>
+    </main>
+
+    <footer>
+        <div>
+            <span>关于我们</span>
+            |
+            <span>联系我们</span>
+            |
+            <span>招聘信息</span>
+        </div>
+        <div>
+            <span>&copy; 星耀商城</span>
+        </div>
+    </footer>
+
 <script>
-const token=localStorage.getItem('token');
-if(!token)location.href='login.html';
+// 导航
+const nav = document.getElementById('nav');
+const token = localStorage.getItem('token');
+const email = localStorage.getItem('email');
 
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+if (token && email) {
+  nav.innerHTML = '<span>' + email + '</span> | <a href="x1.html">继续购物</a> | <button onclick="logout()">退出</button>';
+} else {
+  nav.innerHTML = '<a href="login.html">登录</a> | <a href="register.html">注册</a>';
+  window.location.href = '/login.html';
+}
 
-async function renderCart(){
-  const res=await fetch('/api/cart',{headers:{'Authorization':'Bearer '+token}});
-  const data=await res.json();
-  const cart=data.data||[];
-  const container=document.getElementById('cartContent');
+// 加载购物车
+let cartItems = [];
 
-  if(cart.length===0){
-    container.innerHTML=`<div class="glass empty"><div class="icon">🛒</div><p>购物车还是空的</p><a href="x1.html">去逛逛 →</a></div>`;
+loadCart();
+
+async function loadCart() {
+  if (!token || !email) return;
+
+  try {
+    const res = await fetch('/api/cart?email=' + encodeURIComponent(email));
+    cartItems = await res.json();
+
+    const list = document.getElementById('cartList');
+    const totalEl = document.getElementById('total');
+
+    if (!cartItems || cartItems.length === 0) {
+      list.innerHTML = '<div class="empty">购物车是空的，<a href="x1.html">去逛逛</a></div>';
+      totalEl.textContent = '';
+      return;
+    }
+
+    let total = 0;
+    list.innerHTML = cartItems.map(item => {
+      total += item.price * item.quantity;
+      return '<li>' +
+        '<img src="' + (item.image || 'xt.jpg') + '" alt="' + item.title + '">' +
+        '<div>' +
+          '<h3>' + item.title + '</h3>' +
+          '<div class="price">¥' + item.price + '</div>' +
+          '<div class="qty">' +
+            '<button onclick="updateQty(\'' + item.product_id + '\', -1)">-</button>' +
+            '<span>' + item.quantity + '</span>' +
+            '<button onclick="updateQty(\'' + item.product_id + '\', 1)">+</button>' +
+          '</div>' +
+        '</div>' +
+        '<button class="del" onclick="removeItem(\'' + item.product_id + '\')">删除</button>' +
+      '</li>';
+    }).join('');
+
+    totalEl.textContent = '合计：¥' + total;
+  } catch (e) {
+    document.getElementById('cartList').innerHTML = '<div class="empty">加载失败，请刷新重试</div>';
+  }
+}
+
+// 更新数量
+async function updateQty(productId, delta) {
+  const item = cartItems.find(c => c.product_id === productId);
+  if (!item) return;
+  const newQty = item.quantity + delta;
+
+  if (newQty <= 0) {
+    await removeItem(productId);
     return;
   }
 
-  let html='<div class="glass cart-list">';let total=0;
-  cart.forEach((item,i)=>{
-    total+=item.price*item.qty;
-    html+=`<div class="cart-item"><img src="${item.product_img}"><div class="item-info"><h3>${item.product_name}</h3><div class="price">¥${item.price}</div></div><div class="qty"><button onclick="changeQty(${item.id},-1)">−</button><span>${item.qty}</span><button onclick="changeQty(${item.id},1)">+</button></div><button class="delete" onclick="removeItem(${item.id})">🗑️</button></div>`;
+  await fetch('/api/cart?email=' + encodeURIComponent(email), {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ product_id: productId, quantity: newQty })
   });
-  html+=`<div class="summary"><div class="total">合计：<span>¥${total}</span></div><button class="checkout" onclick="checkout(${total})">立即结算</button></div></div>`;
-  container.innerHTML=html;
+  loadCart();
 }
 
-async function changeQty(id,delta){
-  const cart=await(await fetch('/api/cart',{headers:{'Authorization':'Bearer '+token}})).json();
-  const item=cart.data.find(i=>i.id===id);
-  const newQty=item.qty+delta;
-  await fetch('/api/cart',{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({id,qty:newQty})});
-  renderCart();
+// 删除商品
+async function removeItem(productId) {
+  await fetch('/api/cart?email=' + encodeURIComponent(email), {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ product_id: productId })
+  });
+  loadCart();
 }
 
-async function removeItem(id){
-  await fetch('/api/cart?id='+id,{method:'DELETE',headers:{'Authorization':'Bearer '+token}});
-  renderCart();showToast('已移除');
+// 结算
+async function checkout() {
+  if (!cartItems || cartItems.length === 0) {
+    alert('购物车是空的');
+    return;
+  }
+  try {
+    const res = await fetch('/api/checkout?email=' + encodeURIComponent(email), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const data = await res.json();
+    if (data.ok) {
+      alert('下单成功！');
+      loadCart();
+    } else {
+      alert(data.error || '下单失败');
+    }
+  } catch (e) {
+    alert('网络错误');
+  }
 }
 
-async function checkout(total){
-  const res=await fetch('/api/cart',{headers:{'Authorization':'Bearer '+token}});
-  const data=await res.json();
-  const cart=data.data||[];
-  const cres=await fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({items:cart,total})});
-  const cdata=await cres.json();
-  if(cdata.ok){showToast('✅ 结算成功！邮件已发送');renderCart();}
-  else showToast('❌ 结算失败');
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('email');
+  window.location.href = '/login.html';
 }
-
-renderCart();
 </script>
 </body>
 </html>
