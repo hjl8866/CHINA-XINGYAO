@@ -148,6 +148,11 @@
         padding: 40px 0;
     }
 
+    .empty a {
+        color: #333;
+        text-decoration: underline;
+    }
+
     footer {
         background-color: #333;
         color: white;
@@ -190,7 +195,6 @@
     </footer>
 
 <script>
-// 导航
 const nav = document.getElementById('nav');
 const token = localStorage.getItem('token');
 const email = localStorage.getItem('email');
@@ -202,7 +206,6 @@ if (token && email) {
   window.location.href = '/login.html';
 }
 
-// 加载购物车
 let cartItems = [];
 
 loadCart();
@@ -247,7 +250,6 @@ async function loadCart() {
   }
 }
 
-// 更新数量
 async function updateQty(productId, delta) {
   const item = cartItems.find(c => c.product_id === productId);
   if (!item) return;
@@ -266,7 +268,6 @@ async function updateQty(productId, delta) {
   loadCart();
 }
 
-// 删除商品
 async function removeItem(productId) {
   await fetch('/api/cart?email=' + encodeURIComponent(email), {
     method: 'DELETE',
@@ -276,20 +277,27 @@ async function removeItem(productId) {
   loadCart();
 }
 
-// 结算
 async function checkout() {
   if (!cartItems || cartItems.length === 0) {
     alert('购物车是空的');
     return;
   }
+  if (!token || !email) {
+    alert('登录状态丢失，请重新登录');
+    window.location.href = '/login.html';
+    return;
+  }
   try {
     const res = await fetch('/api/checkout?email=' + encodeURIComponent(email), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
     });
     const data = await res.json();
     if (data.ok) {
-      alert('下单成功！');
+      alert('下单成功！订单号：' + data.order_no);
       loadCart();
     } else {
       alert(data.error || '下单失败');
