@@ -66,13 +66,18 @@ loadCart();
 
 function loadCart() {
     if (!email) return;
-    fetch('/api/cart?email=' + encodeURIComponent(email))
-        .then(r => r.json())
-        .then(items => {
-            cartItems = items || [];
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/cart?email=' + encodeURIComponent(email), true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            cartItems = JSON.parse(xhr.responseText) || [];
             render();
-        })
-        .catch(() => render(true));
+        } else {
+            render(true);
+        }
+    };
+    xhr.onerror = function() { render(true); };
+    xhr.send();
 }
 
 function render(err) {
@@ -88,7 +93,7 @@ function render(err) {
     }
 
     let total = 0;
-    list.innerHTML = cartItems.map(item => {
+    list.innerHTML = cartItems.map(function(item) {
         total += item.price * item.quantity;
         return '<li>' +
             '<img src="' + (item.image || 'xt.jpg') + '" alt="' + item.title + '">' +
@@ -109,48 +114,51 @@ function render(err) {
 }
 
 function updateQty(productId, delta) {
-    const item = cartItems.find(c => c.product_id === productId);
+    var item = cartItems.find(function(c) { return c.product_id === productId; });
     if (!item) return;
-    const newQty = item.quantity + delta;
+    var newQty = item.quantity + delta;
     if (newQty <= 0) { removeItem(productId); return; }
 
-    fetch('/api/cart?email=' + encodeURIComponent(email), {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product_id: productId, quantity: newQty })
-    }).then(() => loadCart());
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', '/api/cart?email=' + encodeURIComponent(email), true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() { loadCart(); };
+    xhr.send(JSON.stringify({ product_id: productId, quantity: newQty }));
 }
 
 function removeItem(productId) {
-    fetch('/api/cart?email=' + encodeURIComponent(email), {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product_id: productId })
-    }).then(() => loadCart());
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/api/cart?email=' + encodeURIComponent(email), true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() { loadCart(); };
+    xhr.send(JSON.stringify({ product_id: productId }));
 }
 
 function checkout() {
     if (!cartItems.length) { showMsg('购物车是空的'); return; }
 
-    let total = 0;
-    cartItems.forEach(i => total += i.price * i.quantity);
+    var total = 0;
+    cartItems.forEach(function(i) { total += i.price * i.quantity; });
 
-    fetch('/api/checkout?email=' + encodeURIComponent(email), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: cartItems, total: total })
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.ok) {
-            showMsg('下单成功！订单号：' + data.order_no);
-            cartItems = [];
-            render();
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/checkout?email=' + encodeURIComponent(email), true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            if (data.ok) {
+                showMsg('下单成功！订单号：' + data.order_no);
+                cartItems = [];
+                render();
+            } else {
+                showMsg(data.error || '下单失败');
+            }
         } else {
-            showMsg(data.error || '下单失败');
+            showMsg('服务器错误: ' + xhr.status);
         }
-    })
-    .catch(() => showMsg('网络错误'));
+    };
+    xhr.onerror = function() { showMsg('网络错误，请重试（建议切手机流量）'); };
+    xhr.send(JSON.stringify({ items: cartItems, total: total }));
 }
 
 function logout() {
@@ -160,10 +168,10 @@ function logout() {
 }
 
 function showMsg(text) {
-    const el = document.getElementById('msg');
+    var el = document.getElementById('msg');
     el.textContent = text;
     el.style.display = 'block';
-    setTimeout(() => { el.style.display = 'none'; }, 2500);
+    setTimeout(function() { el.style.display = 'none'; }, 2500);
 }
 </script>
 </body>
