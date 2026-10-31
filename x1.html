@@ -188,12 +188,15 @@
     <div class="msg" id="msg"></div>
 
 <script>
-// 导航栏：已登录显示邮箱+退出，未登录显示登录/注册
+// ===== 测试弹窗：看 localStorage 里有没有存 email 和 token =====
+alert('email=' + localStorage.getItem('email') + ' | token=' + localStorage.getItem('token'));
+
+// 导航栏：已登录显示邮箱+购物车+退出，未登录显示登录/注册
 const nav = document.getElementById('nav');
 const token = localStorage.getItem('token');
 const email = localStorage.getItem('email');
 
-if (token && email) {
+if (email) {
   nav.innerHTML = '<span>' + email + '</span> | <a href="cart.html">购物车</a> | <button onclick="logout()">退出</button>';
 } else {
   nav.innerHTML = '<a href="login.html">登录</a> | <a href="register.html">注册</a>';
@@ -201,7 +204,7 @@ if (token && email) {
 
 // 加入购物车
 function addCart(productId, title, price, image) {
-  if (!token) {
+  if (!email) {
     alert('请先登录');
     window.location.href = '/login.html';
     return;
