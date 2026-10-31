@@ -1,46 +1,85 @@
-import { getUserByToken } from './auth.js';
+// GET - 获取购物车列表
+export async function onRequestGet({ request, env }) {
+  try {
+    const email = getEmail(request);
+    if (!email) return Response.json({ error: '未登录' }, { status: 401 });
 
-export async function onRequest({ request, env }) {
-  const token = (request.headers.get('Authorization') || '').replace('Bearer ', '');
-  const user = await getUserByToken(env, token);
-  if (!user) return Response.json({ error: '未登录' }, { status: 401 });
+    const items = await env.DB.prepare(
+      'SELECT * FROM cart WHERE email = ? ORDER BY id DESC'
+    ).bind(email).all();
 
-  const method = request.method;
-
-  if (method === 'GET') {
-    const items = await env.DB.prepare('SELECT * FROM carts WHERE user_id = ?').bind(user.id).all();
-    return Response.json({ ok: true, data: items.results });
+    return Response.json(items.results || []);
+  } catch (e) {
+    return Response.json({ error: e.message }, { status: 500 });
   }
+}
 
-  if (method === 'POST') {
-    const { name, img, price, qty } = await request.json();
-    const exist = await env.DB.prepare('SELECT * FROM carts WHERE user_id = ? AND product_name = ?')
-      .bind(user.id, name).first();
+// POST - 加入购物车
+export async function onRequestPost({ request, env }) {
+  try {
+    const email = getEmail(request);
+    if (!email) return Response.json({ error: '未登录' }, { status: 401 });
+
+    const { product_id, title, price, image } = await request.json();
+
+    // 已存在则数量+1
+    const exist = await env.DB.prepare(
+      'SELECT id, quantity FROM cart WHERE email = ? AND product_id = ?'
+    ).bind(email, product_id).first();
+
     if (exist) {
-      await env.DB.prepare('UPDATE carts SET qty = qty + ? WHERE id = ?').bind(qty || 1, exist.id).run();
+      await env.DB.prepare(
+        'UPDATE cart SET quantity = quantity + 1 WHERE id = ?'
+      ).bind(exist.id).run();
     } else {
-      await env.DB.prepare('INSERT INTO carts (user_id, product_name, product_img, price, qty) VALUES (?,?,?,?,?)')
-        .bind(user.id, name, img, price, qty || 1).run();
+      await env.DB.prepare(
+        'INSERT INTO cart (email, product_id, title, price, image, quantity) VALUES (?, ?, ?, ?, ?, 1)'
+      ).bind(email, product_id, title, price, image || '').run();
+    }
+
+    return Response.json({ ok: true, msg: '已加入购物车' });
+  } catch (e) {
+    return Response.json({ error: e.message }, { status: 500 });
+  }
+}
+
+// DELETE - 移除商品
+export async function onRequestDelete({ request, env }) {
+  try {
+    const email = getEmail(request);
+    const { product_id } = await request.json();
+    await env.DB.prepare(
+      'DELETE FROM cart WHERE email = ? AND product_id = ?'
+    ).bind(email, product_id).run();
+    return Response.json({ ok: true });
+  } catch (e) {
+    return Response.json({ error: e.message }, { status: 500 });
+  }
+}
+
+// PUT - 更新数量
+export async function onRequestPut({ request, env }) {
+  try {
+    const email = getEmail(request);
+    const { product_id, quantity } = await request.json();
+    if (quantity <= 0) {
+      await env.DB.prepare(
+        'DELETE FROM cart WHERE email = ? AND product_id = ?'
+      ).bind(email, product_id).run();
+    } else {
+      await env.DB.prepare(
+        'UPDATE cart SET quantity = ? WHERE email = ? AND product_id = ?'
+      ).bind(quantity, email, product_id).run();
     }
     return Response.json({ ok: true });
+  } catch (e) {
+    return Response.json({ error: e.message }, { status: 500 });
   }
+}
 
-  if (method === 'PUT') {
-    const { id, qty } = await request.json();
-    if (qty <= 0) {
-      await env.DB.prepare('DELETE FROM carts WHERE id = ? AND user_id = ?').bind(id, user.id).run();
-    } else {
-      await env.DB.prepare('UPDATE carts SET qty = ? WHERE id = ? AND user_id = ?').bind(qty, id, user.id).run();
-    }
-    return Response.json({ ok: true });
-  }
-
-  if (method === 'DELETE') {
-    const url = new URL(request.url);
-    const id = url.searchParams.get('id');
-    await env.DB.prepare('DELETE FROM carts WHERE id = ? AND user_id = ?').bind(id, user.id).run();
-    return Response.json({ ok: true });
-  }
-
-  return Response.json({ error: 'Method not allowed' }, { status: 405 });
+// 从 header 取邮箱（沿用你 login 存的 email）
+function getEmail(request) {
+  // 优先从 header 取 token，再用 query 里的 email
+  const url = new URL(request.url);
+  return url.searchParams.get('email') || '';
 }
