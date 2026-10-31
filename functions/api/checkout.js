@@ -3,7 +3,7 @@ import { getUserByToken } from './auth.js';
 export async function onRequestPost({ request, env }) {
   const token = (request.headers.get('Authorization') || '').replace('Bearer ', '');
   const user = await getUserByToken(env, token);
-  if (!user) return Response.json({ error: '未 登录' }, { status: 401 });
+  if (!user) return Response.json({ error: '未登录' }, { status: 401 });
 
   const { items, total } = await request.json();
 
