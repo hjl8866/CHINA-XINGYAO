@@ -3,39 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>登录 - 星耀商城</title>
+<title>登录 - CHINA XINGYAO</title>
 <style>
-body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-.container { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 360px; }
-h2 { text-align: center; margin-bottom: 24px; color: #333; }
-input { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
-button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
-button:hover { background: #0056b3; }
-.msg { text-align: center; margin-top: 12px; font-size: 14px; }
-.msg a { color: #007bff; text-decoration: none; }
-.error { color: #dc3545; }
-.success { color: #28a745; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+  .container { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 90%; max-width: 360px; }
+  h1 { text-align: center; margin-bottom: 20px; color: #333; }
+  .form-group { margin-bottom: 15px; }
+  label { display: block; margin-bottom: 6px; color: #555; font-size: 14px; }
+  input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; box-sizing: border-box; }
+  input:focus { border-color: #667eea; }
+  button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+  button:active { transform: scale(0.98); }
+  .msg { text-align: center; margin-top: 15px; font-size: 14px; padding: 10px; border-radius: 8px; display: none; }
+  .msg.success { display: block; background: #d4edda; color: #155724; }
+  .msg.error { display: block; background: #f8d7da; color: #721c24; }
+  .links { text-align: center; margin-top: 20px; font-size: 14px; }
+  .links a { color: #667eea; text-decoration: none; }
 </style>
 </head>
 <body>
 <div class="container">
-  <h2>登录</h2>
-  <input type="email" id="email" placeholder="邮箱" required>
-  <input type="password" id="password" placeholder="密码" required>
-  <button onclick="login()">登录</button>
-  <div class="msg"><a href="register.html">没有账号？去注册</a></div>
-  <div class="msg" id="result"></div>
+  <h1>🔐 登录账号</h1>
+  <form id="loginForm">
+    <div class="form-group">
+      <label for="email">邮箱</label>
+      <input type="email" id="email" placeholder="请输入邮箱" required>
+    </div>
+    <div class="form-group">
+      <label for="password">密码</label>
+      <input type="password" id="password" placeholder="请输入密码" required>
+    </div>
+    <button type="submit">登录</button>
+  </form>
+  <div class="msg" id="msg"></div>
+  <div class="links">
+    <a href="/register.html">没有账号？去注册</a>
+  </div>
 </div>
-<script>
-async function login() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const result = document.getElementById('result');
 
-  if (!email || !password) {
-    result.innerHTML = '<span class="error">请填写邮箱和密码</span>';
-    return;
-  }
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const msg = document.getElementById('msg');
+  msg.style.display = 'none';
 
   try {
     const res = await fetch('/api/login', {
@@ -45,17 +57,28 @@ async function login() {
     });
     const data = await res.json();
 
-    if (data.ok) {
-      localStorage.setItem('token', data.token);
-      result.innerHTML = '<span class="success">登录成功！正在跳转...</span>';
-      setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+    if (res.ok && data.ok) {
+      // 存储 token 和邮箱，供 x1.html 商城页面校验登录状态
+      if (data.token) localStorage.setItem('token', data.token);
+      localStorage.setItem('email', email);
+      
+      msg.textContent = '登录成功！正在进入商城...';
+      msg.className = 'msg success';
+      msg.style.display = 'block';
+      
+      // 【核心】跳转到你的商城主页面 x1.html
+      setTimeout(() => { window.location.href = '/x1.html'; }, 1000);
     } else {
-      result.innerHTML = '<span class="error">' + (data.error || '登录失败') + '</span>';
+      msg.textContent = data.error || '登录失败，请检查账号密码';
+      msg.className = 'msg error';
+      msg.style.display = 'block';
     }
-  } catch (e) {
-    result.innerHTML = '<span class="error">网络错误，请重试</span>';
+  } catch (err) {
+    msg.textContent = '网络错误，请重试';
+    msg.className = 'msg error';
+    msg.style.display = 'block';
   }
-}
+});
 </script>
 </body>
 </html>
