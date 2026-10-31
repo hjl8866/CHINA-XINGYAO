@@ -50,9 +50,11 @@
 <div class="msg" id="msg"></div>
 
 <script>
-const nav = document.getElementById('nav');
+// 关键：只认 email，不卡 token
 const email = localStorage.getItem('email');
 
+// 导航栏
+const nav = document.getElementById('nav');
 if (email) {
     nav.innerHTML = '<span>' + email + '</span> | <a href="x1.html">继续购物</a> | <button onclick="logout()">退出</button>';
 } else {
@@ -65,7 +67,6 @@ let cartItems = [];
 loadCart();
 
 function loadCart() {
-    const email = localStorage.getItem('email');
     if (!email) return;
 
     fetch('/api/cart?email=' + encodeURIComponent(email))
@@ -96,7 +97,7 @@ function render(err) {
             '<img src="' + (item.image || 'xt.jpg') + '" alt="' + item.title + '">' +
             '<div>' +
                 '<h3>' + item.title + '</h3>' +
-                '<div class="price">¥' + item.price + '</div>' +
+                '<div class="price">¥' + item.price + ' × ' + item.quantity + '</div>' +
                 '<div class="qty">' +
                     '<button onclick="updateQty(\'' + item.product_id + '\',-1)">-</button>' +
                     '<span>' + item.quantity + '</span>' +
@@ -139,15 +140,15 @@ function checkout() {
     })
     .then(r => r.json())
     .then(data => {
-        if (data.ok) { showMsg('下单成功'); loadCart(); }
+        if (data.ok) { showMsg('下单成功！订单号：' + data.order_no); loadCart(); }
         else showMsg(data.error || '下单失败');
     })
     .catch(() => showMsg('网络错误'));
 }
 
 function logout() {
-    localStorage.removeItem('token');
     localStorage.removeItem('email');
+    localStorage.removeItem('token');
     window.location.href = '/login.html';
 }
 
