@@ -1,22 +1,52 @@
-import { getUserByToken } from './auth.js';
-
 export async function onRequestPost({ request, env }) {
-  const token = (request.headers.get('Authorization') || '').replace('Bearer ', '');
-  const user = await getUserByToken(env, token);
-  if (!user) return Response.json({ error: '未登录' }, { status: 401 });
+  const url = new URL(request.url);
+  const email = url.searchParams.get('email');
 
-  const { items, total } = await request.json();
+  if (!email) {
+    return Response.json({ error: '未登录' }, { status: 401 });
+  }
 
-  // 生成订单
-  await env.DB.prepare('INSERT INTO orders (user_id, items, total) VALUES (?, ?, ?)')
-    .bind(user.id, JSON.stringify(items), total).run();
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    body = {};
+  }
 
-  // 清空购物车
-  await env.DB.prepare('DELETE FROM carts WHERE user_id = ?').bind(user.id).run();
+  const items = body.items || [];
+  const total = body.total || 0;
+
+  if (!items.length) {
+    return Response.json({ error: '购物车为空' }, { status: 400 });
+  }
+
+  // 确保 orders 表存在
+  await env.DB.prepare(
+    `CREATE TABLE IF NOT EXISTS orders (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT,
+      items TEXT,
+      total INTEGER,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`
+  ).run();
+
+  // 生成订单号
+  const orderNo = 'XY' + Date.now();
+
+  // 写入订单
+  await env.DB.prepare(
+    'INSERT INTO orders (email, items, total) VALUES (?, ?, ?)'
+  ).bind(email, JSON.stringify(items), total).run();
+
+  // 清空购物车（表名是 cart，不是 carts）
+  await env.DB.prepare(
+    'DELETE FROM cart WHERE email = ?'
+  ).bind(email).run();
 
   // 发邮件通知
   try {
-    const itemList = items.map(i => `${i.product_name} × ${i.qty}`).join('<br>');
+    const itemList = items.map(i => `${i.title || i.product_name || '商品'} × ${i.quantity || i.qty || 1}`).join('<br>');
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -25,14 +55,14 @@ export async function onRequestPost({ request, env }) {
       },
       body: JSON.stringify({
         from: "onboarding@resend.dev",
-        to: user.email,
+        to: email,
         subject: '订单结算成功 - 星耀商城',
-        html: '<h2>订单结算成功！</h2><p>感谢你的购买，以下是订单详情：</p><p><strong>商品：</strong><br>' + itemList + '</p><p><strong>合计：¥' + total + '</strong></p><p>我们会尽快为你发货</p>'
+        html: '<h2>订单结算成功！</h2><p>订单号：<strong>' + orderNo + '</strong></p><p>感谢你的购买，以下是订单详情：</p><p><strong>商品：</strong><br>' + itemList + '</p><p><strong>合计：¥' + total + '</strong></p><p>我们会尽快为你发货</p>'
       })
     });
   } catch (e) {
     console.log('邮件发送失败:', e);
   }
 
-  return Response.json({ ok: true, msg: '结算成功' });
+  return Response.json({ ok: true, msg: '结算成功', order_no: orderNo });
 }
