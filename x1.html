@@ -1,142 +1,331 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>星耀商城</title>
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>星耀商城</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      color: rgba(255, 255, 255, 0.9);
+      background:
+        radial-gradient(circle at 12% 15%, rgba(76, 175, 80, 0.35), transparent 45%),
+        radial-gradient(circle at 88% 12%, rgba(0, 200, 255, 0.25), transparent 50%),
+        radial-gradient(circle at 50% 85%, rgba(120, 80, 255, 0.22), transparent 55%),
+        linear-gradient(135deg, #0b0d17, #11142a, #0a0c1a);
+      background-attachment: fixed;
+      position: relative;
+      overflow-x: hidden;
     }
 
+    .glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: saturate(180%) blur(24px);
+      -webkit-backdrop-filter: saturate(180%) blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 0 20px rgba(255, 255, 255, 0.03);
+    }
+
+    /* ===== Header ===== */
     header {
-        background-color: #333;
-        color: white;
-        text-align: center;
-        padding: 10px;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: saturate(180%) blur(28px);
+      -webkit-backdrop-filter: saturate(180%) blur(28px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      padding: 14px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* 汉堡按钮 */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .hamburger:hover { background: rgba(255, 255, 255, 0.12); }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: #ffffff;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    /* 导航 */
+    header nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
     header nav a {
-        color: white;
-        text-decoration: none;
-        margin-right: 10px;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: all 0.2s;
+      white-space: nowrap;
     }
 
     header nav a:hover {
-        color: #ccc;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.12);
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
     }
 
-    main {
-        padding: 10px;
+    /* 遮罩 */
+    .nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 99;
     }
+    .nav-overlay.active { display: block; }
+
+    /* ===== 主内容 ===== */
+    main {
+      padding: 30px 16px;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+    }
+
+    section { padding: 32px; border-radius: 24px; }
 
     section h2 {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
+      font-size: 1.8rem;
+      margin-bottom: 24px;
+      color: #ffffff;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
     }
 
     section ul {
-        list-style: none;
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
     }
 
     section ul li {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      border-radius: 18px;
+      text-align: center;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    section ul li:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
     }
 
     section ul li img {
-        width: 100px;
-        height: 100px;
-        margin-right: 10px;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     }
 
     section ul li h3 {
-        font-size: 1.2rem;
+      font-size: 1.15rem;
+      color: rgba(255, 255, 255, 0.95);
+      margin-bottom: 14px;
+      font-weight: 500;
     }
 
     section ul li button {
-        background-color: #333;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
+      background: rgba(76, 175, 80, 0.25);
+      color: #ffffff;
+      border: 1px solid rgba(76, 175, 80, 0.4);
+      padding: 9px 26px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.25s;
+      backdrop-filter: blur(10px);
     }
 
+    section ul li button:hover {
+      background: rgba(76, 175, 80, 0.5);
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+      transform: scale(1.03);
+    }
+
+    /* ===== Footer ===== */
     footer {
-        background-color: #333;
-        color: white;
-        text-align: center;
-        padding: 10px;
+      background: rgba(0, 0, 0, 0.28);
+      backdrop-filter: saturate(180%) blur(28px);
+      -webkit-backdrop-filter: saturate(180%) blur(28px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+      text-align: center;
+      padding: 20px 16px;
+      margin-top: 40px;
+      position: relative;
+      z-index: 10;
     }
 
-    footer div {
-        margin-bottom: 5px;
-    }
-
+    footer div { margin-bottom: 8px; }
     footer div span {
-        margin-right: 10px;
+      margin: 0 10px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: color 0.2s;
     }
-</style>
+    footer div span:hover { color: #ffffff; }
 
+    /* ===== 响应式 ===== */
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+
+      header nav {
+        position: fixed;
+        top: 0;
+        right: -280px;
+        width: 260px;
+        height: 100vh;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 80px 20px 20px;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: saturate(180%) blur(32px);
+        -webkit-backdrop-filter: saturate(180%) blur(32px);
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        transition: right 0.35s ease;
+        z-index: 101;
+      }
+
+      header nav.open {
+        right: 0;
+      }
+
+      header nav a {
+        padding: 14px 16px;
+        font-size: 15px;
+        border-radius: 10px;
+        margin-bottom: 4px;
+      }
+
+      section { padding: 22px; }
+      section ul { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+      section ul li img { width: 90px; height: 90px; }
+      section h2 { font-size: 1.4rem; }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="fl.html">商品分类</a>
-            <a href="yh.html">优惠活动</a>
-            <a href="cart.html">我的购物车</a>
-            <a href="Orders.html">我的订单</a>
-            <a href="ey.html">e邮商城</a>
-            <a href="x.html">退出登录</a>
-            <a href="ai.html">官方客服</a>
-        </nav>
-    </header>
-    <main>
-        <section>
-           <h2>热门商品</h2>
-            <ul>
-                <li>
-                    <img src="xt.jpg" alt="商品1">
-                    <h3>XINGRAO Tpua XT</h3>
-                    <button>立即购买</button>
-                </li>
-                <li>
-                    <img src="xt.jpg" alt="商品2">
-                    <h3>XINGRAO Tpua XT pro</h3>
-                    <button>立即购买</button>
-                </li>
-                 <li>
-                    <img src="17.jpg" alt="商品3">
-                    <h3>XINGRAO WATCH 5 pro</h3>
-                    <button>立即购买</button>
-                </li>
-                 <li>
-                    <img src="17.jpg" alt="商品4">
-                    <h3>XINGRAO WATCH 5</h3>
-                    <button>立即购买</button>
-                </li>
- 
-            </ul>
-        </section>
-    </main>
-    <footer>
-        <div>
-            <span>关于我们</span>
-            |
-            <span>联系我们</span>
-            |
-            <span>招聘信息</span>
-        </div>
-        <div>
-            <span>&copy; 星耀商城</span>
-        </div>
-    </footer>
-    
-   
-    
+
+  <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+
+  <header>
+    <div class="header-inner">
+      <div style="color:#fff; font-weight:600; font-size:16px; letter-spacing:1px;">星耀商城</div>
+      <div class="hamburger" id="hamburger" onclick="toggleNav()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <nav id="navMenu">
+        <a href="fl.html">商品分类</a>
+        <a href="yh.html">优惠活动</a>
+        <a href="cart.html">我的购物车</a>
+        <a href="Orders.html">我的订单</a>
+        <a href="ey.html">e邮商城</a>
+        <a href="x.html">退出登录</a>
+        <a href="ai.html">官方客服</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="glass">
+      <h2>热门商品</h2>
+      <ul>
+        <li>
+          <img src="xt.jpg" alt="XINGRAO Tpua XT">
+          <h3>XINGRAO Tpua XT</h3>
+          <button>立即购买</button>
+        </li>
+        <li>
+          <img src="xt.jpg" alt="XINGRAO Tpua XT pro">
+          <h3>XINGRAO Tpua XT pro</h3>
+          <button>立即购买</button>
+        </li>
+        <li>
+          <img src="17.jpg" alt="XINGRAO WATCH 5 pro">
+          <h3>XINGRAO WATCH 5 pro</h3>
+          <button>立即购买</button>
+        </li>
+        <li>
+          <img src="17.jpg" alt="XINGRAO WATCH 5">
+          <h3>XINGRAO WATCH 5</h3>
+          <button>立即购买</button>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <span>关于我们</span>|
+      <span>联系我们</span>|
+      <span>招聘信息</span>
+    </div>
+    <div>
+      <span>&copy; 星耀商城</span>
+    </div>
+  </footer>
+
+  <script>
+    function toggleNav() {
+      const nav = document.getElementById('navMenu');
+      const burger = document.getElementById('hamburger');
+      const overlay = document.getElementById('navOverlay');
+      nav.classList.toggle('open');
+      burger.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+  </script>
+
 </body>
 </html>
