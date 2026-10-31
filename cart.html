@@ -28,6 +28,18 @@
     footer div { margin-bottom: 5px; }
     footer div span { margin-right: 10px; }
     .msg { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 20px; border-radius: 6px; display: none; z-index: 999; }
+
+    /* 弹窗样式 */
+    .modal-mask { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+    .modal { background: #111; border: 1px solid #333; border-radius: 12px; padding: 20px; width: 90%; max-width: 350px; }
+    .modal h3 { margin: 0 0 15px 0; color: #fff; text-align: center; }
+    .modal label { display: block; color: #ccc; font-size: 14px; margin-bottom: 5px; }
+    .modal input { width: 100%; box-sizing: border-box; padding: 10px; background: #222; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 16px; margin-bottom: 15px; }
+    .modal input:focus { outline: none; border-color: #fff; }
+    .modal .btn-row { display: flex; gap: 10px; }
+    .modal .btn-row button { flex: 1; padding: 10px; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+    .modal .btn-cancel { background: #333; color: #fff; }
+    .modal .btn-confirm { background: #fff; color: #000; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -48,6 +60,21 @@
 </footer>
 
 <div class="msg" id="msg"></div>
+
+<!-- 结算弹窗 -->
+<div class="modal-mask" id="checkoutModal" style="display:none;">
+    <div class="modal">
+        <h3>填写收货信息</h3>
+        <label>姓名</label>
+        <input type="text" id="buyerName" placeholder="请输入您的姓名">
+        <label>邮箱</label>
+        <input type="email" id="buyerEmail" disabled style="opacity:0.6;">
+        <div class="btn-row">
+            <button class="btn-cancel" onclick="closeModal()">取消</button>
+            <button class="btn-confirm" onclick="submitOrder()">提交订单</button>
+        </div>
+    </div>
+</div>
 
 <script>
 const email = localStorage.getItem('email');
@@ -138,12 +165,39 @@ function removeItem(productId) {
     xhr.send(JSON.stringify({ product_id: productId }));
 }
 
+// ===== 结算流程 =====
 function checkout() {
     if (!cartItems.length) { showMsg('购物车是空的'); return; }
+
+    // 邮箱自动填入（只读）
+    document.getElementById('buyerEmail').value = email;
+    // 姓名清空
+    document.getElementById('buyerName').value = '';
+    // 显示弹窗
+    document.getElementById('checkoutModal').style.display = 'flex';
+    // 聚焦姓名输入框
+    setTimeout(function() { document.getElementById('buyerName').focus(); }, 100);
+}
+
+function closeModal() {
+    document.getElementById('checkoutModal').style.display = 'none';
+}
+
+function submitOrder() {
+    var name = document.getElementById('buyerName').value.trim();
+    if (!name) {
+        alert('请输入姓名');
+        document.getElementById('buyerName').focus();
+        return;
+    }
 
     var total = 0;
     cartItems.forEach(function(i) { total += i.price * i.quantity; });
 
+    // 关闭弹窗
+    closeModal();
+
+    // 提交订单（带姓名）
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/checkout?email=' + encodeURIComponent(email), true);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -151,7 +205,7 @@ function checkout() {
         try {
             var data = JSON.parse(xhr.responseText);
             if (xhr.status === 200 && data.ok) {
-                alert('下单成功！订单号：' + data.order_no);
+                alert('下单成功！\n订单号：' + data.order_no + '\n姓名：' + name);
                 cartItems = [];
                 render();
             } else {
@@ -162,7 +216,7 @@ function checkout() {
         }
     };
     xhr.onerror = function() { alert('网络错误，请切手机流量重试'); };
-    xhr.send(JSON.stringify({ items: cartItems, total: total }));
+    xhr.send(JSON.stringify({ items: cartItems, total: total, buyer_name: name }));
 }
 
 function logout() {
