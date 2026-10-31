@@ -14,7 +14,7 @@
     h2 { font-size: 1.5rem; margin-bottom: 10px; }
     .cart-list { list-style: none; padding: 0; margin: 0; }
     .cart-list li { display: flex; align-items: center; background: #fff; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #eee; }
-    .cart-list li img { width: 80px; height: 80px; margin-right: 10px; }
+    .cart-list li img { width: 80px; height: 80px; margin-right: 10px; object-fit: cover; }
     .cart-list li h3 { font-size: 1.1rem; margin: 0 0 5px 0; }
     .cart-list li .price { color: #e74c3c; font-weight: bold; margin-bottom: 5px; }
     .cart-list li .qty { display: flex; align-items: center; gap: 8px; }
@@ -27,7 +27,7 @@
     footer { background: #333; color: #fff; text-align: center; padding: 10px; margin-top: 20px; }
     footer div { margin-bottom: 5px; }
     footer div span { margin-right: 10px; }
-    .msg { position: fixed; top: 20px; right: 20px; background: #333; color: #fff; padding: 10px 20px; border-radius: 6px; display: none; z-index: 999; }
+    .msg { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 20px; border-radius: 6px; display: none; z-index: 999; }
 </style>
 </head>
 <body>
@@ -50,10 +50,8 @@
 <div class="msg" id="msg"></div>
 
 <script>
-// 关键：只认 email，不卡 token
 const email = localStorage.getItem('email');
 
-// 导航栏
 const nav = document.getElementById('nav');
 if (email) {
     nav.innerHTML = '<span>' + email + '</span> | <a href="x1.html">继续购物</a> | <button onclick="logout()">退出</button>';
@@ -68,7 +66,6 @@ loadCart();
 
 function loadCart() {
     if (!email) return;
-
     fetch('/api/cart?email=' + encodeURIComponent(email))
         .then(r => r.json())
         .then(items => {
@@ -134,14 +131,24 @@ function removeItem(productId) {
 
 function checkout() {
     if (!cartItems.length) { showMsg('购物车是空的'); return; }
+
+    let total = 0;
+    cartItems.forEach(i => total += i.price * i.quantity);
+
     fetch('/api/checkout?email=' + encodeURIComponent(email), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: cartItems, total: total })
     })
     .then(r => r.json())
     .then(data => {
-        if (data.ok) { showMsg('下单成功！订单号：' + data.order_no); loadCart(); }
-        else showMsg(data.error || '下单失败');
+        if (data.ok) {
+            showMsg('下单成功！订单号：' + data.order_no);
+            cartItems = [];
+            render();
+        } else {
+            showMsg(data.error || '下单失败');
+        }
     })
     .catch(() => showMsg('网络错误'));
 }
@@ -156,7 +163,7 @@ function showMsg(text) {
     const el = document.getElementById('msg');
     el.textContent = text;
     el.style.display = 'block';
-    setTimeout(() => { el.style.display = 'none'; }, 1800);
+    setTimeout(() => { el.style.display = 'none'; }, 2500);
 }
 </script>
 </body>
